@@ -1,0 +1,428 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Pusdafi_Dev.ViewModels.SubCategoryVM
+@model SubCategoryIdDtVM;
+@{
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Sub Kategori</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Sub Kategori</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Category List</h3>
+                </div>
+                <div class="card">
+
+                    <div class="mt-3 ml-3">
+                        <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 pr-4 text-right">
+                            <button class="btn btn-primary" id="modalSub" type="button">Tambah Sub</button>
+                            @* asp for mengambil id dari IndexSubCategory(int id) *@
+                            <input type="hidden" asp-for="id" id="inputID" />
+                        </div>
+                        <h5 class="text-left">Kategori = <strong>@ViewBag.namaKategori.Name_cat</strong></h5>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="SubCategoryTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px">No</th>
+                                        <th>Sub Kategori</th>
+                                        <th width="150px">Aksi</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    @*Modal Tambah*@
+                    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="add_sub" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+
+                                        <div class="form-group">
+                                            <label asp-for="categoryId" class="col-form-label">Pilih Kategori:</label>
+                                            <select asp-for="categoryId" class="form-control" id="categoryId">
+                                                <option value="">--select--</option>
+                                                
+                                            </select>
+                                            <span asp-validation-for="categoryId" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="nameSub" class="col-form-label">Nama Sub Kategori:</label>
+                                            <input type="text" class="form-control" asp-for="nameSub">
+                                            <span asp-validation-for="nameSub" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* modal edit *@
+                    <div class="modal fade" id="showModalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="update_sub" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <input type="hidden" asp-for="id" />
+                                        <div class="form-group">
+                                            <label asp-for="eCategoryId" class="col-form-label">Pilih Kategori:</label>
+                                            <select asp-for="eCategoryId" class="form-control" id="eCategoryId">
+                                            </select>
+                                            <span asp-validation-for="eCategoryId" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="eNameSub" class="col-form-label">Nama Sub Kategori:</label>
+                                            <input type="text" class="form-control" asp-for="eNameSub">
+                                            <span asp-validation-for="eNameSub" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="update_sub_btn" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* modal delete *@
+                    <div class="modal fade" id="showModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Hapus Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="delete" enctype="multipart/form-data" id="delete_sub">
+                                    <div class="modal-body">
+                                        <input type="hidden" id="delID">
+                                        <h4>Apakah kamu yakin, ingin menghapus data <br> <center>Sub Kategori ?</center></h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="delete_sub_btn" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.card -->
+                <!-- ./col -->
+
+            </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+@section Scripts {
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        //message setting
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3500
+        });
+
+
+        var CatId = document.getElementById('inputID').value;
+        //trace ajax url
+        //menampilkan tabel sub category
+        function tableCek() {
+
+                $('#SubCategoryTable').DataTable({
+                    //serverSide: true,
+                    responsive: true,
+                    ajax: {
+                        url: CatId + "/getSubCategory",
+                        //    data: {id = Id},
+                        type: "GET",
+                        datatype: 'json'
+                    },
+                    columns: [
+                        {
+                            "data": null, "sortable": false,
+                            render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            },
+                        },
+                        {
+                            data: 'nameSub', name: 'nameSub'
+                        },
+                        {
+                            data: 'aksi', name: 'aksi'
+                        }
+
+                    ],
+                });
+            }
+
+        tableCek();
+
+        //show modal add
+        $("#modalSub").click(function (e) {
+                e.preventDefault();
+
+                $("#showModal").modal("show");
+                fetchProduk();
+            });
+
+        //mengambil dropdown category
+        function fetchProduk() {
+
+                $.ajax({
+                    type: "get",
+                    url: CatId + "/getCategory",
+                    dataType: "JSON",
+                    success: function (response) {
+
+                        if (response.category) {
+                            $("#categoryId").empty();
+
+                            $.each(response.category, function (key, value) {
+
+                                if (value.id == CatId) {
+                                    $("#categoryId").append('<option value="' + value.id + '" selected>' + value.name_cat + '</option>');
+                                } else {
+                                    $("#categoryId").append('<option value="' + value.id + '" >' + value.name_cat + '</option>');
+                                }
+
+                            });
+                        }
+                    }
+                });
+
+            }
+
+        //add Penjualan
+        $("#add_sub").submit(function (e) {
+                e.preventDefault();
+                $("#add_sub_btn").prop('disabled', true);
+                $("#add_sub_btn").text('menyimpan...');
+
+                const dataPnj = new FormData(this);
+                $.ajax({
+                    type: "post",
+                    url: CatId + "/Create",
+                    data: dataPnj,
+                    dataType: "JSON",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        $(document).find('span.error-text').text('');
+                    },
+                    success: function (response) {
+
+                        if (response.status == 400) {
+                            $.each(response.errors, function (previx, val) {
+                                $('span.' + previx + '_error').text(val[0]);
+                            });
+                            $("#add_sub_btn").prop('disabled', false);
+                            $("#add_sub_btn").text('Submit');
+                        } else {
+                            $("#add_sub")[0].reset();
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.message
+                            });
+                            $("#showModal").modal("hide");
+                            $("#add_sub_btn").prop('disabled', false);
+                            $("#add_sub_btn").text("Submit");
+
+                            $("#SubCategoryTable").DataTable().ajax.reload();
+                        }
+                    }
+                });
+            });
+
+        //edit
+        $(document).on('click', '.editSub', function (e) {
+                e.preventDefault();
+                //ambil id dari response
+                var id = $(this).attr('id');
+                // console.log(id);
+                $("#showModalEdit").modal("show");
+
+                $.ajax({
+                    type: "get",
+                    url: CatId + "/getEdit/" + id,
+                    dataType: "JSON",
+                    success: function (response) {
+                        $("#eCategoryId").empty();
+                        $("#eNameSub").empty();
+
+                        $("#id").val(id);
+                        if (response.category) {
+                            var subId = response.subCategory.category_id;
+                            $.each(response.category, function (key, value) {
+
+                                if (value.id == subId) {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" selected>' + value.name_cat + '</option>');
+                                } else {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" >' + value.name_cat + '</option>');
+                                }
+
+                            });
+                        }
+
+                        $('#eNameSub').val(response.subCategory.name_sub);
+
+
+                    }
+
+                });
+
+            });
+
+        //update
+        $("#update_sub").submit(function (e) {
+                e.preventDefault();
+
+                $("#update_sub_btn").prop('disabled', true);
+                $("#update_sub_btn").text("merubah....");
+
+                //mengambil input type hidden di modal edit
+                const id = $("#id").val();
+
+                const editProduk = new FormData(this);
+
+                $.ajax({
+                    type: "post",
+                    url: CatId + "/Edit/"+ id,
+                    data: editProduk,
+                    dataType: "JSON",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+
+                        if (response.status == 400) {
+                            $.each(response.errors, function (previx, val) {
+                                $('span.' + previx + '_error').text(val[0]);
+                            });
+                            $("#update_sub_btn").prop('disabled', false);
+                            $("#update_sub_btn").text('Update');
+                        } else {
+                            $("#update_sub")[0].reset();
+                            Toast.fire({
+                                icon: 'warning',
+                                title: response.message
+                            });
+                            $("#showModalEdit").modal('hide');
+                            $("#update_sub_btn").prop('disabled', false);
+                            $("#update_sub_btn").text('Update');
+
+                            $("#SubCategoryTable").DataTable().ajax.reload();
+
+                        }
+
+                    }
+                });
+
+            });
+        
+        //show modal delete
+        $(document).on('click', '.deleteSub', function (e) {
+            e.preventDefault();
+
+            //mengambil id dari response datatable button delete 
+            var id = $(this).attr("id");
+            //console.log(id);
+            $("#delID").val(id);
+            $("#showModalDelete").modal("show");
+
+        });
+
+        //delete
+        $("#delete_sub").submit(function (e) {
+            e.preventDefault();
+
+            $("#delete_sub_btn").prop('disabled', true);
+            $("#delete_sub_btn").text("menghapus....");
+            var id = $("#delID").val();
+
+            $.ajax({
+                type: "delete",
+                url: CatId + "/Delete/" + id,
+                success: function (response) {
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: response.message
+                    });
+                    $("#showModalDelete").modal("hide");
+                    $("#delete_sub_btn").prop('disabled', false);
+                    $("#delete_sub_btn").text("Hapus");
+
+                    $("#SubCategoryTable").DataTable().ajax.reload();
+
+                }
+            });
+        });
+
+    });
+</script>
+}

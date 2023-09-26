@@ -1,0 +1,179 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Pusdafi_Dev.ViewModels.Pager;
+
+@model IEnumerable<Category>
+@{
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+
+    Pager pager = new Pager();
+    var cel = Model;
+    int pageNo = 0;
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+            pageNo = pager.CurrentPage;
+    }
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Category</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Category</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Category List</h3>
+                </div>
+                <div class="card">
+
+                    <div class="mt-3 ml-3">
+                        <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 text-left">
+                            <a asp-controller="Category" asp-action="Create" type="button" class="btn btn-primary">Tambah</a>
+                          
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Kategori</th>
+                                    <th style="width: 150px">Aksi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 0;
+                              
+                                }
+                               
+                                @foreach (var item in Model)
+                                {
+                                    index++;
+
+                                    var rowNumber = index + (pager.CurrentPage - 1) * pager.PageSize;
+                                  
+                                    <tr>
+                                        <td>@(rowNumber)</td>
+                                        <td>@item.Name_cat</td>
+                                        <td>
+                                            <div class="row">
+                                                <a asp-controller="Category" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-secondary btn-dark">Edit</a>
+                                                &nbsp
+                                                <form asp-controller="Category" asp-action="Delete" method="post" asp-route-id="@item.Id">
+
+                                                    <button onclick="return confirm('Yakin Hapus Data Category')" type="submit" class="btn btn-secondary btn-danger">Hapus</button>
+                                                </form>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+                        
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        @if(pager.TotalPages > 0)
+                        {
+                            
+                        <ul class="pagination pagination-sm m-0 float-right">
+                           @if(pager.CurrentPage > 1)
+                           {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)">&laquo;</a>
+                            </li>
+                           }
+                           @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                           {   
+                          
+                            <li class="page-item @(pge == pager.CurrentPage ? "active": "")">
+                                <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                            </li>
+                           
+                           }
+                           @if(pager.CurrentPage < pager.TotalPages)
+                           {
+                                <li class="page-item">
+                                   <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)">&raquo;</a>
+                               </li>
+                               <li class="page-item">
+                                   <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="@(pager.TotalPages)">Last</a>
+                               </li>
+                           }
+                            </ul>
+                        }
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- /.card -->
+            <!-- ./col -->
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+<script type="text/javascript">
+
+  $(function() {
+        var Toast = Swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 5000
+        });
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    $(document).ready(function () {
+                        Toast.fire({
+                            icon: '@TempData["Icon"]',
+                            title: '@TempData["SuccessMessage"]'
+                        })
+                    })
+            </text>
+        }
+
+
+        
+            
+    });
+         
+
+</script>
+    }

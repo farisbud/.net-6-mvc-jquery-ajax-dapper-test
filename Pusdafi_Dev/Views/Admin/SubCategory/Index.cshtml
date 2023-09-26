@@ -1,0 +1,140 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+
+}
+@using Pusdafi_Dev.ViewModels.SubCategoryVM
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Sub Kategori</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Sub Kategori</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Category List</h3>
+                </div>
+                <div class="card">
+
+                    
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table class="table table-bordered" id="penjualan_table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">No</th>
+                                    <th>Kategori</th>
+                                    <th>Jumlah Sub Kategori</th>
+                                    <th width="150px">Aksi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                      
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                 
+
+
+            </div>
+            <!-- /.card -->
+            <!-- ./col -->
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+<script type="text/javascript">
+
+  $(function() {
+        var Toast = Swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 5000
+        });
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    $(document).ready(function () {
+                        Toast.fire({
+                            icon: '@TempData["Icon"]',
+                            title: '@TempData["SuccessMessage"]'
+                        })
+                    })
+            </text>
+        }     
+    });
+
+
+    $(document).ready(function () {
+
+        //trace ajax url
+        function tableCek() { 
+
+            $('#penjualan_table').DataTable({
+                //serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "SubCategory/indexDataTable",
+                    type: "GET",
+                    datatype: 'json'
+                },
+                columns: [
+                    {
+                        "data": "id",
+                         render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                    },
+                    {
+                        data: 'nameCat', name: 'nameCat'
+                    },
+                    {
+                        data: 'subCount', name: 'subCount'
+                    },
+                    {
+                        data: 'aksi', name: 'aksi'
+                    }
+
+                ],
+            });
+        }
+
+        tableCek();
+
+
+    });
+</script>
+    }

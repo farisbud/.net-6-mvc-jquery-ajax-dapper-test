@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+@using Pusdafi_Dev.ViewModels.Category;
+
+@model EditCategoryVM
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kategori</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Kategori</a></li>
+                        <li class="breadcrumb-item active">Tambah Kategori</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Tambah Kategori</h3>
+                </div>
+
+                <form method="post" asp-controller="Category" asp-action="Edit">
+                    <input type="hidden" asp-for="Id" id="Id" />
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Name_cat">Nama Kategori</label>
+                            <input asp-for="Name_cat" type="text" class="form-control" placeholder="Masukan Nama Kategori">
+                            <span asp-validation-for="Name_cat" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.card -->
+            <!-- ./col -->
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
