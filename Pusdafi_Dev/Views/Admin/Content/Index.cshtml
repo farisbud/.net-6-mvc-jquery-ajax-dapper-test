@@ -5,7 +5,8 @@
 
     Layout = "~/Views/Shared/_layoutAdmin.cshtml";
 }
-@using Pusdafi_Dev.ViewModels.ContentVM
+@using Pusdafi_Dev.ViewModels.ContentViewModels
+@model ContentVM;
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -34,6 +35,13 @@
                     <h3 class="card-title">Kontent</h3>
                 </div>
                 <div class="card">
+                    <div class="mt-3 ml-3">
+                        <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 pr-4 text-right">
+                            <button class="btn btn-primary" id="modalSub" type="button">Tambah</button>
+                            @* asp for mengambil id dari IndexSubCategory(int id) *@
+                            <input type="hidden" asp-for="Id" id="inputID" />
+                        </div>
+                    </div>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="table-responsive">
@@ -53,7 +61,96 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
+                    @*Modal Tambah*@
+                    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="add_sub" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label asp-for="categoryId" class="col-form-label">Pilih Kategori:</label>
+                                                    <select asp-for="categoryId" class="form-control" id="categoryId">
+                                                        <option value="">--select--</option>
+                                                    </select>
+                                                    <span asp-validation-for="categoryId" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label asp-for="subCategoryId" class="col-form-label">Pilih Sub Kategori:</label>
+                                                    <select asp-for="subCategoryId" class="form-control" id="subCategoryId">
+                                                        <option value="">--select--</option>
+                                                    </select>
+                                                    <span asp-validation-for="categoryId" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="form-group">
+                                            <label asp-for="caption" class="col-form-label">Caption:</label>
+                                            <input type="text" class="form-control" asp-for="caption">
+                                            <span asp-validation-for="caption" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="judul" class="col-form-label">Judul:</label>
+                                            <input type="text" class="form-control" asp-for="judul">
+                                            <span asp-validation-for="judul" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="description" class="col-form-label">Deskription:</label>
+                                            <textarea asp-for="description" class="form-control"></textarea>
+                                            <span asp-validation-for="description" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label asp-for="ImagePath" id="custom-file-label" class="col-form-label">Image</label>
+                                            <input asp-for="ImagePath" id="custom-file-input" class="form-control" placeholder="Image" type="file"
+                                                   onchange="document.getElementById('ImagePrv').src = window.URL.createObjectURL(this.files[0])">
+                                            <span asp-validation-for="ImagePath" class="text-danger"></span>
 
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                  
+
+                    @* modal delete *@
+                    <div class="modal fade" id="showModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Hapus Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="delete" enctype="multipart/form-data" id="delete_sub">
+                                    <div class="modal-body">
+                                        <input type="hidden" id="delID">
+                                        <h4>Apakah kamu yakin, ingin menghapus data <br> <center>Sub Kategori ?</center></h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="delete_sub_btn" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>
@@ -67,16 +164,16 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+ @{
+     await Html.RenderPartialAsync("_ValidationScriptsPartial");
+ }
 
-    <script type="text/javascript">
+ <script type="text/javascript">
 
-        $(document).ready(function () {
+     $(document).ready(function () {
 
-            //trace ajax url
-            function tableContent() {
+         //trace ajax url
+         function tableContent() {
 
                 $('#konten_table').DataTable({
                     //serverSide: true,
@@ -110,10 +207,17 @@
                 });
             }
 
-            tableContent();
+         tableContent();
 
+         //show modal
+         $("#modalSub").click(function (e) {
+             e.preventDefault();
 
-        });
-    </script>
+             $("#showModal").modal("show");
+             //fetchProduk();
+         });
+
+     });
+ </script>
 
 }

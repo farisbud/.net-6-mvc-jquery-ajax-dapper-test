@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pusdafi_Dev.Interface;
 using Pusdafi_Dev.Models;
-using Pusdafi_Dev.ViewModels.ContentVM;
+using Pusdafi_Dev.ViewModels.ContentViewModels;
 
 namespace Pusdafi_Dev.Controllers.Admin
 {
