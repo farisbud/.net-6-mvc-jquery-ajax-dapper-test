@@ -17,6 +17,7 @@ builder.Services.AddScoped<LoginIntf, LoginRepo>();
 builder.Services.AddScoped<CategoryIntf, CategoryRepo>();
 builder.Services.AddScoped<SubCategoryIntf, SubCategoryRepo>();
 builder.Services.AddScoped<SubCategoryDataIntf, SubCategoryDataSVC>();
+builder.Services.AddScoped<ContenIntf, ContentRepo>();
 
 
 builder.Services.AddTransient<DapperDBContext>();
