@@ -61,72 +61,11 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
-                    @*Modal Tambah*@
-                    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl" role="document">
-                            <div class="modal-content" class="witdh: 200%;">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Kriteria</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="add_sub" method="POST" enctype="multipart/form-data">
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label asp-for="categoryId" class="col-form-label">Pilih Kategori:</label>
-                                                    <select asp-for="categoryId" class="form-control" id="categoryId">
-                                                        <option value="">--select--</option>
-                                                    </select>
-                                                    <span asp-validation-for="categoryId" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label asp-for="subCategoryId" class="col-form-label">Pilih Sub Kategori:</label>
-                                                    <select asp-for="subCategoryId" class="form-control" id="subCategoryId">
-                                                        <option value="">--select--</option>
-                                                    </select>
-                                                    <span asp-validation-for="categoryId" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                       
-                                        <div class="form-group">
-                                            <label asp-for="caption" class="col-form-label">Caption:</label>
-                                            <input type="text" class="form-control" asp-for="caption">
-                                            <span asp-validation-for="caption" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="judul" class="col-form-label">Judul:</label>
-                                            <input type="text" class="form-control" asp-for="judul">
-                                            <span asp-validation-for="judul" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="description" class="col-form-label">Deskription:</label>
-                                            <textarea asp-for="description" class="form-control"></textarea>
-                                            <span asp-validation-for="description" class="text-danger"></span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label asp-for="ImagePath" id="custom-file-label" class="col-form-label">Image</label>
-                                            <input asp-for="ImagePath" id="custom-file-input" class="form-control" placeholder="Image" type="file"
-                                                   onchange="document.getElementById('ImagePrv').src = window.URL.createObjectURL(this.files[0])">
-                                            <span asp-validation-for="ImagePath" class="text-danger"></span>
+                    @*add modal*@
+                    @await Html.PartialAsync("~/Views/Admin/Content/Create.cshtml")
 
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                  
+                    @*edit modal*@
+                    @await Html.PartialAsync("~/Views/Admin/Content/Edit.cshtml")
 
                     @* modal delete *@
                     <div class="modal fade" id="showModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -164,16 +103,16 @@
 </div>
 
 @section Scripts {
- @{
-     await Html.RenderPartialAsync("_ValidationScriptsPartial");
- }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
- <script type="text/javascript">
+    <script type="text/javascript">
 
-     $(document).ready(function () {
+        $(document).ready(function () {
 
-         //trace ajax url
-         function tableContent() {
+            //trace ajax url
+            function tableContent() {
 
                 $('#konten_table').DataTable({
                     //serverSide: true,
@@ -207,17 +146,128 @@
                 });
             }
 
-         tableContent();
+            tableContent();
 
-         //show modal
-         $("#modalSub").click(function (e) {
-             e.preventDefault();
+            //show modal
+            $("#modalSub").click(function (e) {
+                e.preventDefault();
 
-             $("#showModal").modal("show");
-             //fetchProduk();
-         });
+                $("#showModal").modal("show");
+                fetchCategory();
+                $("#subCategoryId").empty();
+            });
 
-     });
- </script>
+            //get dropdown category
+            function fetchCategory() {
+
+                $.ajax({
+                    type: "POST",
+                    url: "Content/listCategory",
+                    dataType: "JSON",
+                    success: function (response) {
+
+                        if (response.data) {
+                            $("#categoryId").empty();
+                            $("#categoryId").append('<option disabled selected value=""> -- pilih produk -- </option>')
+                            $.each(response.data, function (key, value) {
+                                $("#categoryId").append('<option value="' + value.id + '">' + value.name_cat + '</option>');
+
+                            });
+                        }
+                    }
+                });
+            }
+
+            //show modal edit
+            $(document).on('click', '.editSub', function (e) {
+                e.preventDefault();
+                //ambil id dari response
+                var id = $(this).attr('id');
+                // console.log(id);
+                $("#showModalEdit").modal("show");
+
+                $.post('Content/getEditContent', { id: id },
+                    function (response) {
+                        $("#eCategoryId").empty();
+                        $("#eSubCategoryId").empty();
+                        $("#eCaption").empty();
+                        $("#eJudul").empty();
+                        $("#eDescription").empty();
+                        $("#eImage").empty();
+                       
+                        $("#editId").val(id);
+                     
+                        if (response.cat) {
+                            var catId = response.content[0].categoryId;
+                            var subId = response.content[0].subCategoryId;
+                            $.each(response.cat, function (key, value) {
+                                if (value.id == catId) {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" selected>' + value.name_cat + '</option>');
+                                    fillEditSubCategory(catId,subId)
+                                } else {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" >' + value.name_cat + '</option>');
+                                }
+
+                            });
+                        }
+                        //
+
+                    });
+            });
+
+            //cascade subcategory edit
+            function fillEditSubCategory(selectSub, subId) {
+
+                if (selectSub != null && selectSub != '') {
+                    //simply ajax method post
+                    $.post('Content/listSubCategory', { id: selectSub },
+                        function (response) {
+                            if (response.data) {    
+                                $("#eSubCategoryId").empty();
+                               
+                                $.each(response.data, function (key, value) {
+                                    if (value.id == subId) {
+                                        $("#eSubCategoryId").append('<option value="' + value.id + '" selected>' + value.name_sub + '</option>');
+                                    } else {
+                                        $("#eSubCategoryId").append('<option value="' + value.id + '" >' + value.name_sub + '</option>');
+                                    }
+                                });
+                            }
+                        });
+                }
+
+                return;
+            }
+
+        });
+
+        //cascading subcategory
+        function fillSubCategory(listSub, listSubId) {
+
+            var listData = $("#" + listSubId);
+            listData.empty();
+
+            var selectSub = listSub.options[listSub.selectedIndex].value;
+
+            if (selectSub != null && selectSub != '') {
+                //simply ajax method post
+                $.post('Content/listSubCategory', { id: selectSub },
+                    function (response) {
+                        if (response.data) {
+                            $("#subCategoryId").empty();
+                            $("#subCategoryId").append('<option disabled selected value=""> -- pilih Sub Kategori -- </option>')
+                            $.each(response.data, function (key, value) {
+                                $("#subCategoryId").append('<option value="' + value.id + '">' + value.name_sub + '</option>');
+
+                            });
+                        }
+                    });
+            }
+
+            return;
+        }
+
+
+    </script>
 
 }

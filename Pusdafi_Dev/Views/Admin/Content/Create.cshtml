@@ -1,0 +1,68 @@
+﻿
+
+@using Pusdafi_Dev.ViewModels.ContentViewModels
+@model addContenVM;
+
+@*Modal Tambah*@
+<div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content" class="witdh: 200%;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Kriteria</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_sub" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="categoryId" class="col-form-label">Pilih Kategori:</label>
+                                <select asp-for="categoryId" class="form-control" id="categoryId"
+                                        onchange="fillSubCategory(this,'subCategoryId');">
+                                </select>
+                                <span asp-validation-for="categoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="subCategoryId" class="col-form-label">Pilih Sub Kategori:</label>
+                                <select asp-for="subCategoryId" class="form-control" id="subCategoryId">
+                                    <option value="">--select--</option>
+                                </select>
+                                <span asp-validation-for="subCategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="caption" class="col-form-label">Caption:</label>
+                        <input type="text" class="form-control" asp-for="caption">
+                        <span asp-validation-for="caption" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="judul" class="col-form-label">Judul:</label>
+                        <input type="text" class="form-control" asp-for="judul">
+                        <span asp-validation-for="judul" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="description" class="col-form-label">Deskription:</label>
+                        <textarea asp-for="description" class="form-control"></textarea>
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ImagePath" id="custom-file-label" class="col-form-label">Image</label>
+                        <input asp-for="ImagePath" id="custom-file-input" class="form-control" placeholder="Image" type="file"
+                               onchange="document.getElementById('ImagePrv').src = window.URL.createObjectURL(this.files[0])">
+                        <span asp-validation-for="ImagePath" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

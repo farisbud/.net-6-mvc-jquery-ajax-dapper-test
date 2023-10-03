@@ -15,6 +15,7 @@ namespace Pusdafi_Dev.ViewModels.ContentViewModels
         public string? description { get; set; }
         [NotMapped]
         [Required]
+        public string image {  get; set; }
         public IFormFile ImagePath { get; set; }
         public string? aksi { get; set; }
     }
@@ -35,4 +36,23 @@ namespace Pusdafi_Dev.ViewModels.ContentViewModels
        
 
     }
+
+    public class editContenVM
+    {
+        [Key]
+        public int eId { get; set; }
+        public int eCategoryId { get; set; }
+        public int eSubCategoryId { get; set; }
+        public string? eCaption { get; set; }
+        public string? eJudul { get; set; }
+        //public string? subContent { get; set; }
+        public string? eDescription { get; set; }
+        [NotMapped]
+        [Required]
+        public IFormFile eImagePath { get; set; }
+
+
+    }
+
+
 }
