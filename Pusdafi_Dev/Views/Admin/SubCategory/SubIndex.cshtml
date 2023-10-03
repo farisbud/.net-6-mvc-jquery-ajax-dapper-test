@@ -3,6 +3,7 @@
 *@
 @using Pusdafi_Dev.ViewModels.SubCategoryVM
 @model SubCategoryIdDtVM;
+
 @{
     Layout = "~/Views/Shared/_layoutAdmin.cshtml";
 }
@@ -62,79 +63,11 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
-                    @*Modal Tambah*@
-                    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content" class="witdh: 200%;">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Tambah Kriteria</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="add_sub" method="POST" enctype="multipart/form-data">
-                                    <div class="modal-body">
-
-                                        <div class="form-group">
-                                            <label asp-for="categoryId" class="col-form-label">Pilih Kategori:</label>
-                                            <select asp-for="categoryId" class="form-control" id="categoryId">
-                                                <option value="">--select--</option>
-                                                
-                                            </select>
-                                            <span asp-validation-for="categoryId" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="nameSub" class="col-form-label">Nama Sub Kategori:</label>
-                                            <input type="text" class="form-control" asp-for="nameSub">
-                                            <span asp-validation-for="nameSub" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                    @*add modal*@
+                    @await Html.PartialAsync("~/Views/Admin/SubCategory/Create.cshtml")
 
                     @* modal edit *@
-                    <div class="modal fade" id="showModalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content" class="witdh: 200%;">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit Kriteria</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="update_sub" method="POST" enctype="multipart/form-data">
-                                    <div class="modal-body">
-                                        <input type="hidden" asp-for="id" />
-                                        <div class="form-group">
-                                            <label asp-for="eCategoryId" class="col-form-label">Pilih Kategori:</label>
-                                            <select asp-for="eCategoryId" class="form-control" id="eCategoryId">
-                                            </select>
-                                            <span asp-validation-for="eCategoryId" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="eNameSub" class="col-form-label">Nama Sub Kategori:</label>
-                                            <input type="text" class="form-control" asp-for="eNameSub">
-                                            <span asp-validation-for="eNameSub" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" id="update_sub_btn" class="btn btn-primary">Update</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                    @await Html.PartialAsync("~/Views/Admin/SubCategory/Edit.cshtml")
 
                     @* modal delete *@
                     <div class="modal fade" id="showModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

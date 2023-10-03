@@ -1,0 +1,66 @@
+﻿@using Pusdafi_Dev.ViewModels.ContentViewModels
+@model editContenVM;
+@*Modal Edit*@
+<div class="modal fade" id="showModalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content" class="witdh: 200%;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Kriteria</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_sub" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="editId" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="eCategoryId" class="col-form-label">Pilih Kategori:</label>
+                                <select asp-for="eCategoryId" class="form-control" id="eCategoryId"
+                                        onchange="fillSubCategory(this,'subCategoryId');">
+                                </select>
+                                <span asp-validation-for="eCategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="eSubCategoryId" class="col-form-label">Pilih Sub Kategori:</label>
+                                <select asp-for="eSubCategoryId" class="form-control" id="eSubCategoryId">
+                                    <option value="">--select--</option>
+                                </select>
+                                <span asp-validation-for="eSubCategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="eCaption" class="col-form-label">Caption:</label>
+                        <input type="text" class="form-control" asp-for="eCaption">
+                        <span asp-validation-for="eCaption" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="eJudul" class="col-form-label">Judul:</label>
+                        <input type="text" class="form-control" asp-for="eJudul">
+                        <span asp-validation-for="eJudul" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="eDescription" class="col-form-label">Deskription:</label>
+                        <textarea asp-for="eDescription" class="form-control"></textarea>
+                        <span asp-validation-for="eDescription" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="eImagePath" id="custom-file-label" class="col-form-label">Image</label>
+                        <input asp-for="eImagePath" id="custom-file-input" class="form-control" placeholder="Image" type="file"
+                               onchange="document.getElementById('ImagePrv').src = window.URL.createObjectURL(this.files[0])">
+                        <span asp-validation-for="eImagePath" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="add_sub_btn" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

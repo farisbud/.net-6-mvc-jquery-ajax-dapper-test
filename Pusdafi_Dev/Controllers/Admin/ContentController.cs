@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pusdafi_Dev.Interface;
 using Pusdafi_Dev.Models;
-using Pusdafi_Dev.ViewModels.ContentVM;
+using Pusdafi_Dev.ViewModels.ContentViewModels;
 
 namespace Pusdafi_Dev.Controllers.Admin
 {
     public class ContentController : Controller
     {
         private readonly ContenIntf _content;
-        
-        public ContentController(ContenIntf content)
+        private readonly SubCategoryIntf _subCategory;
+
+        public ContentController(ContenIntf content, SubCategoryIntf subCategory)
         {
             _content = content;
+            _subCategory = subCategory;
         }
         [Route("admin/Content")]
         public async Task<IActionResult> Index()
@@ -48,8 +50,43 @@ namespace Pusdafi_Dev.Controllers.Admin
                 newContents.Add(content);
             }
 
-
             return Json(new { data = newContents });
         }
+
+        [Route("admin/Content/listCategory")]
+        [HttpPost]
+        public async Task<IActionResult> listCategory()
+        {
+            var category = await _subCategory.getCategory();
+
+            return Json(new { data = category });
+
+        }
+
+        [Route("admin/Content/listSubCategory")]
+        [HttpPost]
+        public async Task<IActionResult> getSubCategory(int id)
+        {
+            var category = await _content.getSubCategory(id);
+
+            return Json(new { data = category });
+
+        }
+
+        [Route("admin/Content/getEditContent")]
+        [HttpPost]
+        public async Task<IActionResult> getEditContent(int id)
+        {
+            var category = await _subCategory.getCategory();
+
+            IEnumerable<ContentVM> contents = await _content.getEditContent(id);
+
+            return Json(new { 
+                content = contents,
+                cat = category
+            });
+        }
+
+
     }
 }

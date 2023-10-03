@@ -5,7 +5,8 @@
 
     Layout = "~/Views/Shared/_layoutAdmin.cshtml";
 }
-@using Pusdafi_Dev.ViewModels.ContentVM
+@using Pusdafi_Dev.ViewModels.ContentViewModels
+@model ContentVM;
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -34,6 +35,13 @@
                     <h3 class="card-title">Kontent</h3>
                 </div>
                 <div class="card">
+                    <div class="mt-3 ml-3">
+                        <div class="col-6 col-sm-4 col-md mb-3 mb-xl-0 pr-4 text-right">
+                            <button class="btn btn-primary" id="modalSub" type="button">Tambah</button>
+                            @* asp for mengambil id dari IndexSubCategory(int id) *@
+                            <input type="hidden" asp-for="Id" id="inputID" />
+                        </div>
+                    </div>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="table-responsive">
@@ -53,7 +61,35 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
+                    @*add modal*@
+                    @await Html.PartialAsync("~/Views/Admin/Content/Create.cshtml")
 
+                    @*edit modal*@
+                    @await Html.PartialAsync("~/Views/Admin/Content/Edit.cshtml")
+
+                    @* modal delete *@
+                    <div class="modal fade" id="showModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" class="witdh: 200%;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Hapus Kriteria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="delete" enctype="multipart/form-data" id="delete_sub">
+                                    <div class="modal-body">
+                                        <input type="hidden" id="delID">
+                                        <h4>Apakah kamu yakin, ingin menghapus data <br> <center>Sub Kategori ?</center></h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="delete_sub_btn" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>
@@ -112,8 +148,126 @@
 
             tableContent();
 
+            //show modal
+            $("#modalSub").click(function (e) {
+                e.preventDefault();
+
+                $("#showModal").modal("show");
+                fetchCategory();
+                $("#subCategoryId").empty();
+            });
+
+            //get dropdown category
+            function fetchCategory() {
+
+                $.ajax({
+                    type: "POST",
+                    url: "Content/listCategory",
+                    dataType: "JSON",
+                    success: function (response) {
+
+                        if (response.data) {
+                            $("#categoryId").empty();
+                            $("#categoryId").append('<option disabled selected value=""> -- pilih produk -- </option>')
+                            $.each(response.data, function (key, value) {
+                                $("#categoryId").append('<option value="' + value.id + '">' + value.name_cat + '</option>');
+
+                            });
+                        }
+                    }
+                });
+            }
+
+            //show modal edit
+            $(document).on('click', '.editSub', function (e) {
+                e.preventDefault();
+                //ambil id dari response
+                var id = $(this).attr('id');
+                // console.log(id);
+                $("#showModalEdit").modal("show");
+
+                $.post('Content/getEditContent', { id: id },
+                    function (response) {
+                        $("#eCategoryId").empty();
+                        $("#eSubCategoryId").empty();
+                        $("#eCaption").empty();
+                        $("#eJudul").empty();
+                        $("#eDescription").empty();
+                        $("#eImage").empty();
+                       
+                        $("#editId").val(id);
+                     
+                        if (response.cat) {
+                            var catId = response.content[0].categoryId;
+                            var subId = response.content[0].subCategoryId;
+                            $.each(response.cat, function (key, value) {
+                                if (value.id == catId) {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" selected>' + value.name_cat + '</option>');
+                                    fillEditSubCategory(catId,subId)
+                                } else {
+                                    $("#eCategoryId").append('<option value="' + value.id + '" >' + value.name_cat + '</option>');
+                                }
+
+                            });
+                        }
+                        //
+
+                    });
+            });
+
+            //cascade subcategory edit
+            function fillEditSubCategory(selectSub, subId) {
+
+                if (selectSub != null && selectSub != '') {
+                    //simply ajax method post
+                    $.post('Content/listSubCategory', { id: selectSub },
+                        function (response) {
+                            if (response.data) {    
+                                $("#eSubCategoryId").empty();
+                               
+                                $.each(response.data, function (key, value) {
+                                    if (value.id == subId) {
+                                        $("#eSubCategoryId").append('<option value="' + value.id + '" selected>' + value.name_sub + '</option>');
+                                    } else {
+                                        $("#eSubCategoryId").append('<option value="' + value.id + '" >' + value.name_sub + '</option>');
+                                    }
+                                });
+                            }
+                        });
+                }
+
+                return;
+            }
 
         });
+
+        //cascading subcategory
+        function fillSubCategory(listSub, listSubId) {
+
+            var listData = $("#" + listSubId);
+            listData.empty();
+
+            var selectSub = listSub.options[listSub.selectedIndex].value;
+
+            if (selectSub != null && selectSub != '') {
+                //simply ajax method post
+                $.post('Content/listSubCategory', { id: selectSub },
+                    function (response) {
+                        if (response.data) {
+                            $("#subCategoryId").empty();
+                            $("#subCategoryId").append('<option disabled selected value=""> -- pilih Sub Kategori -- </option>')
+                            $.each(response.data, function (key, value) {
+                                $("#subCategoryId").append('<option value="' + value.id + '">' + value.name_sub + '</option>');
+
+                            });
+                        }
+                    });
+            }
+
+            return;
+        }
+
+
     </script>
 
 }
